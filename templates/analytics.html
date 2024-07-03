@@ -1,0 +1,350 @@
+{% extends "basefile.html" %}
+
+{% block titlename %}Expense Analysis{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1px solid black;
+        text-align: center;
+    
+    }
+    th, td {
+        padding: 5px;
+        border: 1px solid black;
+    }
+</style>
+{% endblock %}
+{% block main_content %}
+
+<h1 style="text-align: center;">Expense Analytics</h1>
+<hr>
+
+<!-- First Graph -->
+<h4>Monthly Expense Per Year</h4>
+<br>
+<form method="get" action="{{ url_for('analytics') }}" style="margin-bottom: 1rem;">
+    <span class="form_label">
+        <label for="year">Select Year:</label>
+        <select name="year" id="year">
+            {% for year in range(c_year - 10, c_year + 1) %}
+                <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+        </select>
+    </span>
+    <button type="submit" class="graph-button">Apply</button>
+</form>
+
+<p style="text-align: center; font-weight: 600;">Year : {{ selected_year }}</p>
+<div class="container">
+    <div class="row" style="justify-content: space-around; align-items: center;">
+        <div class="monthly_expense col-sm-10">
+            <canvas id="yearlyExpenseBarChart"></canvas>
+        </div>
+        <div class="col-sm-2">
+            <table id="bargraph">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Expense (₹)</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table-body">
+                    {% for month, expense in bar_data %}
+                    <tr>
+                        <td>{{ month }}</td>
+                        <td>{{ '%.2f' % expense }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <button class="btn btn-primary mt-2" onclick="getdatainpdf('bargraph', 'Monthly_Expense_{{ selected_year }}')">Download as PDF</button>
+        </div>
+    </div>
+</div>
+<br><br>
+
+<!-- Second Graph -->
+
+<h4>Expense Per Month-Year By Category</h4>
+<br>
+<form method="get" action="{{ url_for('analytics') }}" style=" margin-bottom: 1rem;">
+    <span class="form_label">
+        <label for="year2">Select Year:</label>
+        <select name="year2" id="year2">
+            {% for year in range(c_year - 10, c_year + 1) %}
+                <option value="{{ year }}" {% if year == selected_year2 %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+        </select>
+    </span>
+    <span class="form_label">
+        <label for="month">Select Month:</label>
+        <select name="month" id="month">
+            {% for month in range(1,13) %}
+                <option value="{{ month }}" {% if month == selected_month %}selected{% endif %}>{{ month }}</option>
+            {% endfor %}
+        </select>
+    </span>
+    <button type="submit" class="graph-button">Apply</button>
+</form>
+
+<p style="text-align: center; font-weight: 600;">Year-Month : {{ selected_year2 }} / {{ selected_month }}</p>
+<div class="container">
+    <div class="row" style="justify-content: space-around; align-items: center;">
+        <div class="expense_by_category col-sm-6" >
+            <canvas id="categorywiseExpensePieChart"></canvas>
+        </div>
+        <div class="col-sm-3">
+            {% if pie_data %}
+                <table id="piegraph">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Expense (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-table-body">
+                        {% for category, expense in pie_data %}
+                        <tr>
+                            <td>{{ category }}</td>
+                            <td>{{ '%.2f' % expense }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <button class="btn btn-primary mt-2" onclick="getdatainpdf('piegraph', 'Category_Expense_{{ selected_year2 }}_{{ selected_month }}')">Download as PDF</button>
+            {% else %}
+            <div class="card empty-card mt-4">
+                <div class="card-body text-center">
+                    <p class="empty-text">No Such Data Found.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<br><br>
+
+<!-- Third Graph -->
+
+<h4>Expenses Over The Years</h4>
+<br>
+<form method="get" action="{{ url_for('analytics') }}" style="margin-bottom: 1rem;">
+    <span class="form_label">
+        <label for="start_year">Select Start Year:</label>
+        <select name="start_year" id="start_year">
+            {% for year in range(c_year - 10, c_year + 1) %}
+                <option value="{{ year }}" {% if year == start_year %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+        </select>
+    </span>
+    <span class="form_label">
+        <label for="end_year">Select End Year:</label>
+        <select name="end_year" id="end_year">
+            {% for year in range(c_year - 10, c_year + 1) %}
+                <option value="{{ year }}" {% if year == end_year %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+        </select>
+    </span>
+    <button type="submit" class="graph-button">Apply</button>
+</form>
+
+<p style="text-align: center; font-weight: 600;">Years : {{ start_year }}-{{ end_year }}</p>
+<div class="container">
+    <div class="row" style="justify-content: space-around; align-items: center;">
+        <div class="expense_over_years col-sm-8">
+            <canvas id="annuallyExpenseLineChart"></canvas>
+        </div>
+        <div class="col-sm-3">
+            <table id="linegraph">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Expense (₹)</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table-body">
+                    {% for year, expense in line_data %}
+                    <tr>
+                        <td>{{ year }}</td>
+                        <td>{{ '%.2f' % expense }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <button class="btn btn-primary mt-2" onclick="getdatainpdf('linegraph', 'Annual_Expense_{{ start_year }}_to_{{ end_year }}')">Download as PDF</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctxBar = document.getElementById('yearlyExpenseBarChart').getContext('2d');
+        const yearlyExpenseBarChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                datasets: [{
+                    label: 'Expenses',
+                    data: {{ monthly_expenses | tojson }},
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₹' + value;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return '₹' + tooltipItem.raw.toFixed(2);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const ctxPie = document.getElementById('categorywiseExpensePieChart').getContext('2d');
+        const categorywiseExpensePieChart = new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: {{ categories | tojson }},
+                datasets: [{
+                    label: 'Expenses',
+                    data: {{ monthly_expenses_by_category | tojson }},
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return '₹' + tooltipItem.raw.toFixed(2);
+                            }
+                        }
+                    }
+                },
+                cutoutPercentage: 50
+            }
+        });
+
+        const ctxLine = document.getElementById('annuallyExpenseLineChart').getContext('2d');
+        const yearlyExpenseLineChart = new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: {{ years | tojson }},
+                datasets: [{
+                    label: 'Total Expenses',
+                    data: {{ annual_amount_per_year | tojson }},
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Yearly Total Expenses'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+
+    function getdatainpdf(tableid, filenm) {
+        const table = document.getElementById(tableid).outerHTML;
+        const csrfToken = "{{ csrf_token() }}";
+        const form = document.createElement('form');
+
+        form.method = 'post';
+        form.action = '{{ url_for('generate_graph_data_pdf') }}';
+
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = 'csrf_token';
+        csrf.value = csrfToken;
+        form.appendChild(csrf);
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'table';
+        input.value = table;
+        form.appendChild(input);
+
+        const filename = document.createElement('input');
+        filename.type = 'hidden';
+        filename.name = 'filenm';
+        filename.value = filenm;
+        form.appendChild(filename);
+
+        const title = document.createElement('input');
+        title.type = 'hidden';
+        title.name = 'title';
+        title.value = filenm;
+        form.appendChild(title);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+</script>
+
+{% endblock %}

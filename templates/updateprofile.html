@@ -1,0 +1,25 @@
+{% extends "basefile.html" %}
+
+{% block titlename %}Update Profile{% endblock %}
+
+{% block main_content %}
+
+  <div class="card">
+    <h2 class="card-header">Update Profile</h2>
+    <div class="card-body">
+        <form method="post" action="">
+          <input type="hidden" name="csrf_token" value = "{{ csrf_token() }}" />  
+            <p><strong>Username :</strong> {{ user.username }}</p>
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" name="email" style="color: black;" value="{{ user.email }}" id="email">
+            </div>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" name="name" style="color: black;" value="{{ user.name }}" id="name">
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+          </form>
+    </div>
+</div>
+{% endblock %}

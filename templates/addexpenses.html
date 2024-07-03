@@ -1,0 +1,195 @@
+{% extends "basefile.html" %}
+
+{% block titlename %}Add Expenses{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+{% endblock %}
+{% block main_content %}
+
+<h2 style="text-align: center;">Add Expense</h2>
+<br>
+<div class="container" style="width: 600px;">
+    <form id="expenseForm" onsubmit="return false;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" id="csrf_token">
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" class="form-control" id="date" name="date" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" class="form-control" id="description" name="description" required>
+        </div>
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select class="form-control" id="category" name="category_id" required>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="number" class="form-control" id="amount" name="amount" min="0" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="payment_method">Payment Method</label>
+            <select class="form-control" name="payment_method_id" id="payment_method">
+                {% for pay_method in payment_methods %}
+                    <option value="{{ pay_method.id }}">{{ pay_method.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="payee">Payee</label>
+            <input type="text" class="form-control" id="payee" name="payee" required>
+        </div>
+        <div class="form-group" style="text-align: center;">
+            <button type="button" class="btn btn-warning" id="addexpense" onclick="addExpenseToTable()">Add More</button>
+            <button type="button" class="btn btn-success" onclick="saveExpenses()">Save</button>
+        </div>
+    </form>
+</div>
+<br>
+
+<table class="table table-striped table-hover" id="expensesTable">
+    <thead>
+        <tr>
+            <th>Select</th>
+            <th>Sno</th>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Pay. Method</th>
+            <th>Payee</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<div class="form-group">
+    <button type="button" class="btn btn-danger" onclick="deleteSelectedRows()">Delete Selected Rows</button>
+    <button type="button" class="btn btn-primary" onclick="submitExpenses()">Submit</button>
+</div>
+
+<a href="{{ url_for('dashboard') }}">Back</a>
+
+<script>
+    let expenseCounter = 0;
+    let expense_data = false;
+
+    function addExpenseToTable() {
+        if (!expense_data) {
+            alert('You have not save current data or Empty fields. Please try again!');
+            return;
+        }
+        document.getElementById('expenseForm').reset();
+        expense_data = false;
+    }
+    function saveExpenses() {
+        if (expense_data) {
+            alert('Saved this item already !');
+            return;
+        }
+        const date = document.getElementById('date').value;
+        const description = document.getElementById('description').value;
+        const category = document.getElementById('category').selectedOptions[0];
+        const categoryId = category.value;
+        const categoryName = category.text;
+        const amount = document.getElementById('amount').value;
+        const payment_method = document.getElementById('payment_method').selectedOptions[0];
+        const payment_methodId = payment_method.value;
+        const payment_methodName = payment_method.text;
+        const payee = document.getElementById('payee').value;
+
+        if (!date || !description || !categoryId || !payment_methodId || !amount || !payee) {
+            alert('Please fill out all fields.');
+            return;
+        }
+
+        expenseCounter++;
+        const table = document.getElementById('expensesTable').getElementsByTagName('tbody')[0];
+        const data = table.insertRow();
+
+        data.innerHTML = `
+            <td><input type="checkbox" class="expense-checkbox"></td>
+            <td>${expenseCounter}</td>
+            <td>${date}</td>
+            <td data-category-id="${categoryId}">${categoryName}</td>
+            <td>${description}</td>
+            <td>${amount}</td>
+            <td data-payment_method-id="${payment_methodId}">${payment_methodName}</td>
+            <td>${payee}</td>
+        `;
+        expense_data = true;
+    }
+
+    function addExpenseToTable() {
+        if (!expense_data) {
+            alert('You have not save current data or Empty fields. Please try again!');
+            return;
+        }
+        document.getElementById('expenseForm').reset();
+        expense_data = false;
+    }
+
+    function deleteSelectedRows() {
+        const table = document.getElementById('expensesTable').getElementsByTagName('tbody')[0];
+        const checkboxes = table.getElementsByClassName('expense-checkbox');
+
+        for (let i = checkboxes.length - 1; i >= 0; i--) {
+            if (checkboxes[i].checked) {
+                table.deleteRow(i);
+                expenseCounter--;
+            }
+        }
+        const remainingRows = table.getElementsByTagName('tr');
+        for (let i = 0; i < remainingRows.length; i++) {
+            const snoCell = remainingRows[i].getElementsByTagName('td')[1];
+            snoCell.innerText = i + 1;
+        }
+    }
+
+    function submitExpenses() {
+        const table = document.getElementById('expensesTable').getElementsByTagName('tbody')[0];
+        const rows = table.getElementsByTagName('tr');
+        const expenses = [];
+        const csrfToken = document.getElementById('csrf_token').value;
+
+        for (let i = 0; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            const expense = {
+                date: cells[2].innerText,
+                category_id: cells[3].dataset.categoryId,
+                description: cells[4].innerText,
+                amount: cells[5].innerText,
+                payment_method_id: cells[6].dataset.payment_methodId,
+                payee: cells[7].innerText
+            };
+            expenses.push(expense);
+        }
+
+        fetch("{{ url_for('save_expenses') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ expenses: expenses })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Expenses saved successfully.');
+                    window.location.href = "{{ url_for('dashboard') }}";
+                } else {
+                    alert('Failed to save expenses: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving expenses.');
+            });
+    }
+</script>
+{% endblock %}

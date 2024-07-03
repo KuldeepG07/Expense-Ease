@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup_login.css') }}">
+    <script src="{{ url_for('static', filename='signup_login.js') }}"></script>
+    <title>Login</title>
+    <style>
+        /* Add custom styles for the eye icon */
+        .forms_field {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="card empty-card mt-4">
+                <div class="card-body text-center">
+                    <p class="empty-text">{{ message }}</p>
+                </div>
+            </div>  
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <section class="user">
+        <div style="display: flex; flex-direction:row; align-items:center;">
+            <div><img src="{{ url_for('static', filename='images/logo_2.png') }}" style="margin:5px;" width="80px"></div>
+            <div style="font-size:30px;margin:5px; font-weight:600;">Welcome</div>
+            <div><img src="{{ url_for('static', filename='images/logo_2.png') }}" style="margin:5px;" width="80px"></div>
+        </div>
+        <div class="user_options-container">
+            <div class="user_options-text">
+                <div class="user_options-unregistered">
+                    <h2 class="user_unregistered-title">Don't have an account?</h2>
+                    <p class="user_unregistered-text" style="font-size:15px;">Create now!</p>
+                    <button class="user_unregistered-signup" id="signup-button"><a href="/register">Sign Up</a></button>
+                </div>
+
+                <div class="user_options-registered">
+                    <h2 class="user_registered-title">Already have an account!</h2>
+                    <p class="user_registered-text" style="font-size:16px;">Get started..</p>
+                    <button class="user_registered-login" id="login-button"><a href="/login">Log In</a></button>
+                </div>
+            </div>
+
+            <div class="user_options-forms" id="user_options-forms">
+                <div class="user_forms-login">
+                    <h2 class="forms_title">Login</h2>
+                    <form class="forms_form" method="post" action="/login">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <fieldset class="forms_fieldset">
+                            <div class="forms_field">
+                                <input type="text" placeholder="Username" name="username" class="forms_field-input" required autofocus />
+                            </div>
+                            <div class="forms_field">
+                                <input type="password" placeholder="Password" name="password" class="forms_field-input password-input" required />
+                                <span class="toggle-password"><input type="checkbox" onclick="visible_password(this)">Show Password</span>
+                            </div>
+                        </fieldset>
+                        <div class="forms_buttons">
+                            <a href="{{ url_for('forgot_password') }}" class="forms_buttons-forgot">Forgot password?</a>
+                            <input type="submit" value="Log In" class="forms_buttons-action">
+                        </div>
+                        {% if login_message %}
+                            <div class="card empty-card mt-4">
+                                <div class="card-body text-center">
+                                    <p class="empty-text">{{ login_message }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </form>
+                    <center>
+                        <div class="div-btn-google">
+                            <button class="btn btn-google" onclick="window.location.href = '{{url_for('login_google')}}'">
+                                <img src="{{ url_for('static', filename='images/google.png') }}" alt="Google Logo" class="google-logo">
+                                Sign in with Google
+                            </button>
+                        </div>
+                        <div class="div-btn-github">
+                            <button class="btn btn-github" onclick="window.location.href = '{{url_for('login_github')}}'">
+                                <img src="{{ url_for('static', filename='images/github.png') }}" alt="github Logo" class="github-logo">
+                                Sign in with Github
+                            </button>
+                        </div>
+                    </center>
+                </div>
+                <div class="user_forms-signup">
+                    <h2 class="forms_title">Sign Up</h2>
+                    <form class="forms_form" action="/register" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <fieldset class="forms_fieldset">
+                            <div class="forms_field">
+                                <input type="text" placeholder="Your Name" name="name" class="forms_field-input" required />
+                            </div>
+                            <div class="forms_field">
+                                <input type="text" placeholder="Username" name="username" class="forms_field-input" required />
+                            </div>
+                            <div class="forms_field">
+                                <input type="email" placeholder="Email" name="email" class="forms_field-input" required />
+                            </div>
+                            <div class="forms_field">
+                                <input type="password" placeholder="Password" name="password" class="forms_field-input password-input" required />
+                                <span class="toggle-password">
+                                    <input type="checkbox" onclick="visible_password(this)">Show Password
+                                </span>
+                            </div>
+                        </fieldset>
+                        <div class="forms_buttons">
+                            <input type="submit" value="Sign up" class="forms_buttons-action">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>
