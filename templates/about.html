@@ -1,0 +1,113 @@
+{% extends "basefile.html" %}
+
+{% block titlename %} About Us {% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+<style>
+
+</style>
+{% endblock %}
+{% block main_content %}
+<h1 style="text-align: center;">About Us</h1><hr>
+<div class="container">
+    <div class="row" style="justify-content: center; align-items: center; flex-wrap: wrap;">
+        <div class="col-md-9">
+            <h2>Expense Ease</h2>
+            <br>
+            <p><strong>Welcome to Expense Ease</strong>, your trusted companion for effortless expense tracking. Our
+                journey began with a simple idea: to make managing expenses easy, intuitive, and stress-free. Today,
+                we're proud to be a leading online expense tracker, helping individuals take control of their finances.
+            </p>
+        </div>
+        <div class="about-image col-md-3">
+            <img src="{{ url_for('static', filename='images/logo_2.png')}}" alt="">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 about-text">
+            <h2>Our Mission</h2>
+            <hr>
+            <p>At Expense Ease, we're dedicated to empowering individuals to make informed financialdecisions. We
+                believe that tracking expenses should be easy, not overwhelming. Our mission is to provide a
+                user-friendly, feature-rich platform that helps you stay on top of your expenses, so you can focus on
+                what matters most.</p>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>What We Do</h2>
+            <hr>
+            <p>We provide a comprehensive online expense tracking platform that helps individuals and businesses track,
+                manage, and analyze their expenses. Our platform is designed to be easy to use, intuitive, and
+                customizable, so you can focus on what matters most: your finances.</p>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-8 about-text">
+            <h2>Developer's Info</h2>
+            <hr>
+            <div class="row developer-info">
+                <div class="developer-contact col-md-4">
+                    <span><i class="fa fa-user"></i> Kuldeep Gabani</span>
+                    <span><i class="fa fa-phone"></i> +91 9879825206</span>
+                    <span><i class="fa fa-envelope"></i> k4gabani@gmail.com</span>
+                </div>
+                <div class="developer-social col-md-4">
+                    <a href="https://www.instagram.com/kuldeep_gabani07/?next=%2F" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://github.com/KuldeepG07" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/kuldeep-gabani/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                </div>
+                <div class="developer-photo col-md-4">
+                    <img src="{{ url_for('static', filename='images/profile.png')}}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-d-8">
+            <h2>Why Choose Us</h2>
+            <hr>
+            <p>
+                <li>Easy expense tracking and management</li>
+            </p>
+            <p>
+                <li>Customizable categories and tags</li>
+            </p>
+            <p>
+                <li>Real-time expense analysis and reporting</li>
+            </p>
+            <p>
+                <li>Secure and reliable data storage</li>
+            </p>
+            <p>
+                <li>Scalable and flexible platform</li>
+            </p>
+        </div>
+    </div>
+</div>
+
+<button onclick="topFunction()" id="backToTopBtn" title="Go to top"><i class="fa fa-arrow-up"></button>
+
+<script>
+    let mybutton = document.getElementById("backToTopBtn");
+
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0; // Safari
+        document.documentElement.scrollTop = 0; // Chrome, Firefox, IE and Opera
+        $('html, body').animate({ scrollTop: 0 }, 800);
+    }
+</script>
+{% endblock %}
