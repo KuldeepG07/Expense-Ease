@@ -1,0 +1,224 @@
+.round-button {
+    border-radius: 360px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 50px;
+    width: 100%;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: rgb(255, 255, 255)
+}
+
+.round-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    background-color: rgb(245, 251, 254)
+}
+
+.custom-box,
+.manageexpense-content {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #15c58a;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.custom-box:hover {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+}
+
+.manageexpense-content:hover {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.custom-heading {
+    font-weight: bold;
+    font-size: 1.20em;
+    text-align: center;
+}
+
+.exepense-value {
+    padding: 10px;
+    font-weight: bold;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+#filter_button {
+    border: 1px solid #fff;
+    border-radius: 10px;
+    color: #fcfbfb;
+    background-color: rgb(10, 153, 201);
+}
+
+.filter {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.heading {
+    font-size: 1.50rem;
+    font-weight: 500;
+    text-align: center;
+    padding: 3px;
+}
+
+.heading-content {
+    text-align: center;
+    font-size: medium;
+    padding: 4px;
+}
+
+.expense-button,
+.graph-button {
+    border: 1px solid rgb(204, 202, 202);
+    border-radius: 4px;
+    padding: 8px;
+    text-align: center;
+    margin: 4px;
+}
+
+
+/* Graph Style  */
+
+.monthly_expense,
+.expense_by_category,
+.expense_over_years {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.form_label {
+    padding-right: 1rem;
+}
+
+/* Empth List Styling */
+
+.empty-card {
+    /* border: 1px solid; */
+    border-image: linear-gradient(to right, #f06, #f79) 1;
+    background: linear-gradient(to right, #ffecd2, #fcb69f);
+    border-radius: 5px;
+    padding: 5px;
+    color: #333;
+}
+
+.empty-text {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin: 0;
+}
+
+/* About Us html file Design */
+
+.about-image {
+    background-color: #f0f0f0;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.about-text {
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.developer-info, .developer-social {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.developer-contact {
+    display: flex;
+    flex-direction: column;
+    min-height: 150px;
+    justify-content: space-around;
+}
+
+.developer-contact i {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.developer-social {
+    display: flex;
+    justify-content: space-between;
+}
+
+.developer-social a {
+    font-size: 30px;
+    margin-right: 20px;
+    text-decoration: none;
+    color: #333;
+}
+.developer-social a:hover {
+    font-size: 35px;
+    margin-right: 20px;
+    text-decoration: none;
+    color: #333;
+}
+
+.developer-photo {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: auto;
+    animation: moveUpDown 2s ease-in-out infinite;
+}
+
+.developer-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@keyframes moveUpDown {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Back to top */
+
+#backToTopBtn {
+    display: none; 
+    position: fixed; 
+    bottom: 20px; 
+    right: 30px; 
+    z-index: 99; 
+    border: none; 
+    outline: none; 
+    background-color: #000; 
+    color: white; 
+    cursor: pointer; 
+    padding: 15px; 
+    border-radius: 10px; 
+}
+
+#backToTopBtn:hover {
+    background-color: #181818; 
+}
