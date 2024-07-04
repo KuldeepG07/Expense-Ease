@@ -67,3 +67,5 @@
 <br>
 ⭐<strong>Authentication:</strong> OAuth 2.0
 <br>
+⭐<strong>Analytics:</strong> Chart.js
+<br>
